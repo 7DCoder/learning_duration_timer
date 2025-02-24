@@ -217,7 +217,9 @@
             // 绑定删除事件
             logItem.querySelector('.delete-btn').addEventListener('click', function () {
                 const id = parseInt(this.dataset.id);
-                // 从数组中移除
+                // 删除时暂停计时且不记录当前段
+                pauseTimerWithoutLog();
+                // 从数组中移除 
                 logs = logs.filter(log => log.id !== id);
                 // 更新总时间显示
                 updateDisplay();
@@ -268,7 +270,22 @@
             document.getElementById('logContainer').innerHTML = '';
         }
 
-        
+        function pauseTimerWithoutLog() {
+            if (isRunning) {
+                isRunning = false;
+                clearInterval(timerInterval);
+                currentSessionStart = 0; // 重置当前计时段
+                lastPauseTime = Date.now();
+                // 更新按钮状态
+                document.getElementById('startPauseBtn').innerHTML = `
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M8 5v14l11-7z"/>
+                </svg>
+                继续
+            `;
+            }
+        }
+
         // 事件监听
         document.getElementById('startPauseBtn').addEventListener('click', toggleTimer);
         document.getElementById('resetBtn').addEventListener('click', resetTimer);
